@@ -1,0 +1,147 @@
+<!-- https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Simple Bar chart</title>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+        }
+        
+        .bar {
+            fill: #5f89ad;
+        }
+        
+        .axis {
+            font-size: 13px;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            display: none;
+        }
+        
+        .label {
+            font-size: 13px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="graphic"></div>
+
+    <script>
+       d3.csv("data/EU_tourists_arrivals.csv",
+
+  // When reading the csv, I must format variables:
+  // When reading the csv, I must format variables:
+  function(d){
+    return [ {name : 'IT' , value : d.IT},
+    		 {name : 'FR' , value : d.FR},
+    		 {name : 'ES' , value : d.ES},
+    		 {name : 'DE' , value : d.DE},
+    		 {name : 'UK' , value : d.UK}]
+  },
+  // Now I can use this dataset:
+  function(data) {
+        
+		data = data[data.length-1]
+        //sort bars based on value
+        data = data.sort(function (a, b) {
+            return d3.ascending(a.value, b.value);
+        })
+
+        //set up svg using margin conventions - we'll need plenty of room on the left for labels
+        var margin = {
+            top: 25,
+            right: 80,
+            bottom: 15,
+            left: 60
+        };
+
+        var width = 600 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
+
+        var svg = d3.select("#graphic").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scale.linear()
+            .range([0, width])
+            .domain([0, d3.max(data, function (d) {
+                return d.value;
+            })]);
+
+        var y = d3.scale.ordinal()
+            .rangeRoundBands([height, 0], .1)
+            .domain(data.map(function (d) {
+                return d.name;
+            }));
+
+        //make y axis to show bar names
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            //no tick marks
+            .tickSize(0)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+        var bars = svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("g")
+
+        //append rects
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function (d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", 0)
+            .attr("width", function (d) {
+                return x(d.value);
+            });
+
+        //add a value label to the right of each bar
+        bars.append("text")
+            .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function (d) {
+                return y(d.name) + y.rangeBand() / 2 + 4;
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", function (d) {
+                return x(d.value) + 3;
+            })
+            .text(function (d) {
+                return d.value;
+            });
+            
+        // title
+  		svg.append("text")
+      .attr("y", 0 - margin.top)
+      .attr("x",(width / 2))
+      .attr("dy", "1em")
+      .attr("font-weight", "bold")
+      .attr("font-size", "16px")
+      .style("text-anchor", "middle")
+      .text("Total Number of Tourists Arrivals for Italy In October 2019");   
+
+      }  )
+    </script>
+
+</body>
+
+</html>
