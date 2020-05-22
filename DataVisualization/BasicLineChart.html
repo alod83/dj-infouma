@@ -1,0 +1,88 @@
+<!-- Code from d3-graph-gallery.com -->
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="line"></div>
+
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 50, right: 30, bottom: 30, left: 100},
+    width = 600 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#line")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+//Read the data
+d3.csv("data/EU_tourists_arrivals.csv",
+
+  // When reading the csv, I must format variables:
+  function(d){
+    return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.IT }
+  },
+
+  // Now I can use this dataset:
+  function(data) {
+
+    // Add X axis --> it is a date format
+    var x = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { return d.date; }))
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+	// Add Y axis
+    var y = d3.scaleLinear()
+      .domain([0, d3.max(data, function(d) { return +d.value; })])
+      .range([ height, 0 ]);
+      
+    svg.append("g")
+      .call(d3.axisLeft(y));
+      
+    // text label for the y axis
+  	svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em") //The dy attribute indicates a shift along the y-axis on the position of an element or its content.
+      .attr("font-size", "12px")
+      .style("text-anchor", "middle")
+      .text("Total Number of Tourists Arrivals"); 
+      
+    // title
+  	svg.append("text")
+      .attr("y", 0 - margin.top)
+      .attr("x",(width / 2))
+      .attr("dy", "1em")
+      .attr("font-weight", "bold")
+      .attr("font-size", "16px")
+      .style("text-anchor", "middle")
+      .text("Total Number of Tourists Arrivals for Italy");   
+
+    // Add the line
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return x(d.date) })
+        .y(function(d) { return y(d.value) })
+        )
+
+})
+
+</script>
