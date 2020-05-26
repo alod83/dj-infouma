@@ -1,12 +1,15 @@
 <!-- Code from d3-graph-gallery.com -->
 <!DOCTYPE html>
-<meta charset="utf-8">
+<html>
+<head>
+	<meta charset="utf-8">
 
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
-
-<!-- Create a div where the graph will take place -->
-<div id="graph"></div>
+	<!-- Load d3.js -->
+	<script src="https://d3js.org/d3.v4.js"></script>
+</head>
+<body>
+	<!-- Create a div where the graph will take place -->
+	<div id="graph"></div>
 
 
 <script>
@@ -44,6 +47,7 @@ d3.csv("data/EU_tourists_arrivals.csv",
     var x = d3.scaleTime()
       .domain(d3.extent(data, function(d) { return d[4].x; }))
       .range([ 0, width ]);
+      
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
@@ -111,3 +115,5 @@ d3.csv("data/EU_tourists_arrivals.csv",
 })
 
 </script>
+</body>
+</html>

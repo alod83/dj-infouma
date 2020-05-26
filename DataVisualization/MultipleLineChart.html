@@ -1,14 +1,15 @@
 <!-- Code from d3-graph-gallery.com -->
 <!DOCTYPE html>
+<html>
+<head>
 <meta charset="utf-8">
 
-<!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 
+</head>
+<body>
 <!-- Create a div where the graph will take place -->
 <div id="line"></div>
-
-
 <script>
 
 // set the dimensions and margins of the graph
@@ -70,7 +71,7 @@ d3.csv("data/EU_tourists_arrivals.csv",
       .attr("font-weight", "bold")
       .attr("font-size", "16px")
       .style("text-anchor", "middle")
-      .text("Total Number of Tourists Arrivals for Italy");   
+      .text("Total Number of Tourists Arrivals");   
 
 	var countries = ['IT', 'FR','DE','UK','ES'];
 	
@@ -113,3 +114,5 @@ d3.csv("data/EU_tourists_arrivals.csv",
 })
 
 </script>
+</body>
+</html>
